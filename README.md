@@ -1,0 +1,1 @@
+Esse projeto é referente a materia de Topicos em Linguagem de Programação, onde no projeto, é inserido a conexão com banco de dados usando o metodo DAO (Data Access Object), está anexado nesse projeto, um .txt com o codigo utilizado no banco de dados, PostgreSQL 
