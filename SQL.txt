@@ -1,0 +1,53 @@
+ **** CODIGO UTILIZADO NO POSTGRES
+create table pessoa (
+    id        integer generated always as identity primary key,
+    nome      varchar(100) not null,
+    data_nasc date not null
+);
+
+create table banda (
+    id             integer generated always as identity primary key,
+    nome           varchar(100) not null,
+    ano_formacao   integer not null,
+    genero_musical varchar(50)
+);
+
+create table usuario (
+    id             integer primary key references pessoa (id) on delete cascade,
+    email          varchar(150) not null,
+    data_cadastro  timestamp not null,
+    genero_musical varchar(50)
+);
+
+create table perfil_musical (
+    id integer primary key references usuario (id) on delete cascade
+);
+
+create table artista (
+    id             integer primary key references pessoa (id) on delete cascade,
+    nome_artistico varchar(100) not null,
+    id_banda       integer references banda (id) on delete set null
+);
+
+create table musica (
+    id          integer generated always as identity primary key,
+    nome_musica varchar(150) not null,
+    data_lanc   date not null,
+    tempo_m     real not null,
+    genero      varchar(50) not null,
+    id_artista  integer references artista (id) on delete cascade
+);
+
+create table playlist (
+    id         integer generated always as identity primary key,
+    nome       varchar(100) not null,
+    id_usuario integer not null references usuario (id) on delete cascade
+);
+
+create table playlist_musica (
+    id          integer generated always as identity primary key,
+    id_playlist integer not null references playlist (id) on delete cascade,
+    id_musica   integer not null references musica (id) on delete cascade,
+    ordem       integer not null,
+    data_adicao timestamp not null
+);
