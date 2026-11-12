@@ -10,8 +10,8 @@ public class UsuarioImpl implements UsuarioDao {
 
     @Override
     public void inserir(Usuario objeto) {
-        String sqlPessoa = "INSERT INTO pessoa (nome, idade) VALUES (?, ?) RETURNING id";
-        String sqlUsuario = "INSERT INTO usuario (id, email, data_cadastro) VALUES (?, ?, ?)";
+        String sqlPessoa = "insert into pessoa (nome, idade) values (?, ?)";
+        String sqlUsuario = "insert into usuario (id, email, data_cadastro) values (?, ?, ?)";
         try (Connection conn = Conexao.obterConexao()) {
             conn.setAutoCommit(false);
             long pessoaId = 0;
@@ -38,7 +38,7 @@ public class UsuarioImpl implements UsuarioDao {
 
     @Override
     public Optional<Usuario> buscarPorID(long id) {
-        String sql = "SELECT p.id, p.nome, p.idade, u.email, u.data_cadastro FROM pessoa p JOIN usuario u ON p.id = u.id WHERE p.id = ?";
+        String sql = "select * from usuario where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
@@ -49,7 +49,7 @@ public class UsuarioImpl implements UsuarioDao {
                     rs.getString("nome"),
                     rs.getInt("idade"),
                     rs.getString("email"),
-                    new java.util.Date(rs.getTimestamp("data_cadastro").getTime())
+                    rs.getDate("data_cadastro")
                 );
                 return Optional.of(u);
             }
@@ -61,16 +61,9 @@ public class UsuarioImpl implements UsuarioDao {
 
     @Override
     public void alterar(Usuario objeto) {
-        String sqlPessoa = "UPDATE pessoa SET nome = ?, idade = ? WHERE id = ?";
-        String sqlUsuario = "UPDATE usuario SET email = ?, data_cadastro = ? WHERE id = ?";
+        String sqlUsuario = "update usuario set email = ?, data_cadastro = ? where id = ?";
         try (Connection conn = Conexao.obterConexao()) {
             conn.setAutoCommit(false);
-            try (PreparedStatement stmtP = conn.prepareStatement(sqlPessoa)) {
-                stmtP.setString(1, objeto.getNome());
-                stmtP.setInt(2, objeto.getIdade());
-                stmtP.setLong(3, objeto.getId());
-                stmtP.executeUpdate();
-            }
             try (PreparedStatement stmtU = conn.prepareStatement(sqlUsuario)) {
                 stmtU.setString(1, objeto.getEmail());
                 stmtU.setTimestamp(2, new Timestamp(objeto.getDataCadastro().getTime()));
@@ -85,7 +78,7 @@ public class UsuarioImpl implements UsuarioDao {
 
     @Override
     public void excluir(Usuario objeto) {
-        String sql = "DELETE FROM pessoa WHERE id = ?";
+        String sql = "delete from pessoa where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, objeto.getId());
@@ -98,7 +91,7 @@ public class UsuarioImpl implements UsuarioDao {
     @Override
     public List<Usuario> listarTodos() {
         List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT p.id, p.nome, p.idade, u.email, u.data_cadastro FROM pessoa p JOIN usuario u ON p.id = u.id";
+        String sql = "select * from usuario";
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -108,7 +101,7 @@ public class UsuarioImpl implements UsuarioDao {
                     rs.getString("nome"),
                     rs.getInt("idade"),
                     rs.getString("email"),
-                    new java.util.Date(rs.getTimestamp("data_cadastro").getTime())
+                    rs.getDate("data_cadastro")
                 ));
             }
         } catch (SQLException e) {

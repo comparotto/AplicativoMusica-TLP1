@@ -10,7 +10,7 @@ public class PlaylistMImpl implements PlaylistMDao {
 
     @Override
     public void inserir(PlaylistM objeto) {
-        String sql = "INSERT INTO playlist_musica (playlist_id, musica_id, posicao) VALUES (?, ?, ?)";
+        String sql = "insert into playlist_musica (playlist_id, musica_id, posicao) values (?, ?, ?)";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, objeto.getPlaylist().getId());
@@ -29,7 +29,7 @@ public class PlaylistMImpl implements PlaylistMDao {
 
     @Override
     public void alterar(PlaylistM objeto) {
-        String sql = "UPDATE playlist_musica SET posicao = ? WHERE playlist_id = ? AND musica_id = ?";
+        String sql = "update playlist_musica set posicao = ? where playlist_id = ? and musica_id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, objeto.getPosicao());
@@ -43,7 +43,7 @@ public class PlaylistMImpl implements PlaylistMDao {
 
     @Override
     public void excluir(PlaylistM objeto) {
-        String sql = "DELETE FROM playlist_musica WHERE playlist_id = ? AND musica_id = ?";
+        String sql = "delete from playlist_musica where playlist_id = ? and musica_id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, objeto.getPlaylist().getId());
@@ -57,14 +57,10 @@ public class PlaylistMImpl implements PlaylistMDao {
     @Override
     public List<PlaylistM> listarTodos() {
         List<PlaylistM> lista = new ArrayList<>();
-        String sql = "SELECT * FROM playlist_musica";
+        String sql = "select * from playlist_musica";
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                // Instâncias associativas simples
-                // (Para carregamento completo, utiliza-se PlaylistDao e MusicaDao)
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

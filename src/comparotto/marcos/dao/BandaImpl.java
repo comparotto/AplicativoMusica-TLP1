@@ -1,6 +1,7 @@
 package comparotto.marcos.dao;
 
 import comparotto.marcos.aplicativoMusica.Banda;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ public class BandaImpl implements BandaDao {
 
     @Override
     public void inserir(Banda objeto) {
-        String sql = "INSERT INTO banda (nome, genero_musical) VALUES (?, ?) RETURNING id";
+        String sql = "insert into banda (nome, genero_musical) values (?, ?) ";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNome());
@@ -26,17 +27,17 @@ public class BandaImpl implements BandaDao {
 
     @Override
     public Optional<Banda> buscarPorID(long id) {
-        String sql = "SELECT * FROM banda WHERE id = ?";
+        String sql = "select * from banda where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 Banda b = new Banda(
-                    rs.getLong("id"),
-                    rs.getString("nome"),
-                    rs.getString("genero_musical"),
-                    null, null
+                        rs.getLong("id"),
+                        rs.getString("nome"),
+                        rs.getString("genero_musical"),
+                        null, null
                 );
                 return Optional.of(b);
             }
@@ -48,7 +49,7 @@ public class BandaImpl implements BandaDao {
 
     @Override
     public void alterar(Banda objeto) {
-        String sql = "UPDATE banda SET nome = ?, genero_musical = ? WHERE id = ?";
+        String sql = "update banda set nome = ?, genero_musical = ? where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNome());
@@ -62,7 +63,7 @@ public class BandaImpl implements BandaDao {
 
     @Override
     public void excluir(Banda objeto) {
-        String sql = "DELETE FROM banda WHERE id = ?";
+        String sql = "delete from banda where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, objeto.getId());
@@ -75,16 +76,16 @@ public class BandaImpl implements BandaDao {
     @Override
     public List<Banda> listarTodos() {
         List<Banda> lista = new ArrayList<>();
-        String sql = "SELECT * FROM banda";
+        String sql = "select * from banda";
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 lista.add(new Banda(
-                    rs.getLong("id"),
-                    rs.getString("nome"),
-                    rs.getString("genero_musical"),
-                    null, null
+                        rs.getLong("id"),
+                        rs.getString("nome"),
+                        rs.getString("genero_musical"),
+                        null, null
                 ));
             }
         } catch (SQLException e) {

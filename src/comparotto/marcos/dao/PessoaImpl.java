@@ -10,7 +10,7 @@ public class PessoaImpl implements PessoaDao {
 
     @Override
     public void inserir(Pessoa objeto) {
-        String sql = "INSERT INTO pessoa (nome, idade) VALUES (?, ?) RETURNING id";
+        String sql = "insert into pessoa (nome, idade) values (?, ?)";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNome());
@@ -26,7 +26,7 @@ public class PessoaImpl implements PessoaDao {
 
     @Override
     public Optional<Pessoa> buscarPorID(long id) {
-        String sql = "SELECT * FROM pessoa WHERE id = ?";
+        String sql = "select *  from pessoa where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
@@ -46,7 +46,7 @@ public class PessoaImpl implements PessoaDao {
 
     @Override
     public void alterar(Pessoa objeto) {
-        String sql = "UPDATE pessoa SET nome = ?, idade = ? WHERE id = ?";
+        String sql = "update pessoa set nome = ?, idade = ? where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNome());
@@ -60,7 +60,7 @@ public class PessoaImpl implements PessoaDao {
 
     @Override
     public void excluir(Pessoa objeto) {
-        String sql = "DELETE FROM pessoa WHERE id = ?";
+        String sql = "delete from pessoa where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, objeto.getId());
@@ -73,7 +73,7 @@ public class PessoaImpl implements PessoaDao {
     @Override
     public List<Pessoa> listarTodos() {
         List<Pessoa> lista = new ArrayList<>();
-        String sql = "SELECT * FROM pessoa";
+        String sql = "select * from pessoa";
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {

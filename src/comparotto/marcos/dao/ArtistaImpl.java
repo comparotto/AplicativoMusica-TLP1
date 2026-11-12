@@ -1,6 +1,7 @@
 package comparotto.marcos.dao;
 
 import comparotto.marcos.aplicativoMusica.Artista;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +11,8 @@ public class ArtistaImpl implements ArtistaDao {
 
     @Override
     public void inserir(Artista objeto) {
-        String sqlPessoa = "INSERT INTO pessoa (nome, idade) VALUES (?, ?) RETURNING id";
-        String sqlArtista = "INSERT INTO artista (id, nome_artistico) VALUES (?, ?)";
+        String sqlPessoa = "insert into pessoa (nome, idade) values (?, ?)";
+        String sqlArtista = "insert into artista (id, nome_artistico) values (?, ?)";
         try (Connection conn = Conexao.obterConexao()) {
             conn.setAutoCommit(false);
             long pessoaId = 0;
@@ -37,17 +38,17 @@ public class ArtistaImpl implements ArtistaDao {
 
     @Override
     public Optional<Artista> buscarPorID(long id) {
-        String sql = "SELECT p.id, p.nome, p.idade, a.nome_artistico FROM pessoa p JOIN artista a ON p.id = a.id WHERE p.id = ?";
+        String sql = "select * artista where id = ?;";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 Artista a = new Artista(
-                    rs.getLong("id"),
-                    rs.getString("nome"),
-                    rs.getInt("idade"),
-                    rs.getString("nome_artistico")
+                        rs.getLong("id"),
+                        rs.getString("nome"),
+                        rs.getInt("idade"),
+                        rs.getString("nome_artistico")
                 );
                 return Optional.of(a);
             }
@@ -59,16 +60,9 @@ public class ArtistaImpl implements ArtistaDao {
 
     @Override
     public void alterar(Artista objeto) {
-        String sqlPessoa = "UPDATE pessoa SET nome = ?, idade = ? WHERE id = ?";
-        String sqlArtista = "UPDATE artista SET nome_artistico = ? WHERE id = ?";
+        String sqlArtista = "update artista set nome_artistico = ? where id = ?";
         try (Connection conn = Conexao.obterConexao()) {
             conn.setAutoCommit(false);
-            try (PreparedStatement stmtP = conn.prepareStatement(sqlPessoa)) {
-                stmtP.setString(1, objeto.getNome());
-                stmtP.setInt(2, objeto.getIdade());
-                stmtP.setLong(3, objeto.getId());
-                stmtP.executeUpdate();
-            }
             try (PreparedStatement stmtA = conn.prepareStatement(sqlArtista)) {
                 stmtA.setString(1, objeto.getNomeArtistico());
                 stmtA.setLong(2, objeto.getId());
@@ -82,7 +76,7 @@ public class ArtistaImpl implements ArtistaDao {
 
     @Override
     public void excluir(Artista objeto) {
-        String sql = "DELETE FROM pessoa WHERE id = ?";
+        String sql = "delete from artista where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, objeto.getId());
@@ -95,16 +89,16 @@ public class ArtistaImpl implements ArtistaDao {
     @Override
     public List<Artista> listarTodos() {
         List<Artista> lista = new ArrayList<>();
-        String sql = "SELECT p.id, p.nome, p.idade, a.nome_artistico FROM pessoa p JOIN artista a ON p.id = a.id";
+        String sql = "select * from pessoa ";
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 lista.add(new Artista(
-                    rs.getLong("id"),
-                    rs.getString("nome"),
-                    rs.getInt("idade"),
-                    rs.getString("nome_artistico")
+                        rs.getLong("id"),
+                        rs.getString("nome"),
+                        rs.getInt("idade"),
+                        rs.getString("nome artistico")
                 ));
             }
         } catch (SQLException e) {

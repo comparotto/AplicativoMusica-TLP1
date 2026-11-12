@@ -10,7 +10,7 @@ public class MusicaImpl implements MusicaDao {
 
     @Override
     public void inserir(Musica objeto) {
-        String sql = "INSERT INTO musica (nome_musica, data_lancamento, tempo_min, genero_musical) VALUES (?, ?, ?, ?) RETURNING id";
+        String sql = "insert into musica (nome_musica, data_lancamento, tempo_min, genero_musical) values (?, ?, ?, ?) ";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNomeMusica());
@@ -28,7 +28,7 @@ public class MusicaImpl implements MusicaDao {
 
     @Override
     public Optional<Musica> buscarPorID(long id) {
-        String sql = "SELECT * FROM musica WHERE id = ?";
+        String sql = "select * from musica WHERE id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
@@ -52,7 +52,7 @@ public class MusicaImpl implements MusicaDao {
 
     @Override
     public void alterar(Musica objeto) {
-        String sql = "UPDATE musica SET nome_musica = ?, data_lancamento = ?, tempo_min = ?, genero_musical = ? WHERE id = ?";
+        String sql = "update musica set nome_musica = ?, data_lancamento = ?, tempo_min = ?, genero_musical = ? where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNomeMusica());
@@ -68,7 +68,7 @@ public class MusicaImpl implements MusicaDao {
 
     @Override
     public void excluir(Musica objeto) {
-        String sql = "DELETE FROM musica WHERE id = ?";
+        String sql = "delete from musica where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, objeto.getId());
@@ -81,7 +81,7 @@ public class MusicaImpl implements MusicaDao {
     @Override
     public List<Musica> listarTodos() {
         List<Musica> lista = new ArrayList<>();
-        String sql = "SELECT * FROM musica";
+        String sql = "select * from musica";
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {

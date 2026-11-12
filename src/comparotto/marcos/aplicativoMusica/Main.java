@@ -9,6 +9,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("=== Aplicativo de Música ===");
 
+
         Usuario usuario = new Usuario("Marcos Comparotto", 22, "marcos@email.com", new Date());
         Artista artista1 = new Artista("Chester Bennington", 41, "Chester");
 
@@ -28,6 +29,7 @@ public class Main {
 
         playlist.adicionarMusica(m1);
         playlist.adicionarMusica(m2);
+
 
         System.out.println("\nPlaylist: " + playlist.getNomePlaylist() + " | Duração Total: " + playlist.getDuracao() + " min");
         System.out.println("Músicas na Playlist (Relacionamento 1:N via PlaylistM):");

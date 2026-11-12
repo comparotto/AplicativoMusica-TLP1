@@ -10,7 +10,7 @@ public class PlaylistImpl implements PlaylistDao {
 
     @Override
     public void inserir(Playlist objeto) {
-        String sql = "INSERT INTO playlist (nome_playlist, duracao) VALUES (?, ?) RETURNING id";
+        String sql = "insert into playlist (nome_playlist, duracao) values (?, ?) ";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNomePlaylist());
@@ -26,7 +26,7 @@ public class PlaylistImpl implements PlaylistDao {
 
     @Override
     public Optional<Playlist> buscarPorID(long id) {
-        String sql = "SELECT * FROM playlist WHERE id = ?";
+        String sql = "select * from playlist where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
@@ -47,7 +47,7 @@ public class PlaylistImpl implements PlaylistDao {
 
     @Override
     public void alterar(Playlist objeto) {
-        String sql = "UPDATE playlist SET nome_playlist = ?, duracao = ? WHERE id = ?";
+        String sql = "update playlist set nome_playlist = ?, duracao = ? where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNomePlaylist());
@@ -61,7 +61,7 @@ public class PlaylistImpl implements PlaylistDao {
 
     @Override
     public void excluir(Playlist objeto) {
-        String sql = "DELETE FROM playlist WHERE id = ?";
+        String sql = "delete from playlist where id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, objeto.getId());
@@ -74,7 +74,7 @@ public class PlaylistImpl implements PlaylistDao {
     @Override
     public List<Playlist> listarTodos() {
         List<Playlist> lista = new ArrayList<>();
-        String sql = "SELECT * FROM playlist";
+        String sql = "select * from playlist";
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
