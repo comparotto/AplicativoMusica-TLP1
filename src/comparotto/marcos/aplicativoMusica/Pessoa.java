@@ -1,9 +1,13 @@
 package comparotto.marcos.aplicativoMusica;
 
 public abstract class Pessoa {
+
     private long id;
     private String nome;
     private int idade;
+
+    public Pessoa() {
+    }
 
     public Pessoa(long id, String nome, int idade) {
         this.id = id;
@@ -41,11 +45,6 @@ public abstract class Pessoa {
     }
 
     public void exibir() {
-        System.out.println("ID: " + this.id + " | Nome: " + this.nome + " | Idade: " + this.idade);
-    }
-
-    @Override
-    public String toString() {
-        return nome;
+        System.out.println("id: " + id + " nome: " + nome + " idade: " + idade);
     }
 }

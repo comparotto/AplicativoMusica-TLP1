@@ -4,54 +4,88 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Playlist {
+
     private long id;
     private String nomePlaylist;
     private List<PlaylistM> itens;
     private float duracao;
-    private List<Usuario> donos;
+    private Usuario usuario;
 
-    public Playlist(long id, String nomePlaylist, List<Usuario> donos) {
-        this.id = id;
-        this.nomePlaylist = nomePlaylist;
-        this.donos = donos != null ? donos : new ArrayList<>();
-        this.itens = new ArrayList<>();
-        this.duracao = 0.0f;
+    public Playlist() {
+        this.itens = new ArrayList<PlaylistM>();
     }
 
     public Playlist(String nomePlaylist) {
         this.nomePlaylist = nomePlaylist;
-        this.donos = new ArrayList<>();
-        this.itens = new ArrayList<>();
-        this.duracao = 0.0f;
+        this.itens = new ArrayList<PlaylistM>();
     }
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public Playlist(long id, String nomePlaylist, List<PlaylistM> itens) {
+        this.id = id;
+        this.nomePlaylist = nomePlaylist;
+        this.itens = itens;
+    }
 
-    public String getNomePlaylist() { return nomePlaylist; }
-    public void setNomePlaylist(String nomePlaylist) { this.nomePlaylist = nomePlaylist; }
+    public Playlist(long id, String nomePlaylist, float duracao, Usuario usuario) {
+        this.id = id;
+        this.nomePlaylist = nomePlaylist;
+        this.duracao = duracao;
+        this.usuario = usuario;
+        this.itens = new ArrayList<PlaylistM>();
+    }
 
-    public List<PlaylistM> getItens() { return itens; }
-    public void setItens(List<PlaylistM> itens) { this.itens = itens; recalcularduracao(); }
+    public long getId() {
+        return id;
+    }
 
-    public float getDuracao() { return duracao; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-    public List<Usuario> getDonos() { return donos; }
-    public void setDonos(List<Usuario> donos) { this.donos = donos; }
+    public String getNomePlaylist() {
+        return nomePlaylist;
+    }
+
+    public void setNomePlaylist(String nomePlaylist) {
+        this.nomePlaylist = nomePlaylist;
+    }
+
+    public List<PlaylistM> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<PlaylistM> itens) {
+        this.itens = itens;
+    }
+
+    public float getDuracao() {
+        return duracao;
+    }
+
+    public void setDuracao(float duracao) {
+        this.duracao = duracao;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
     public void adicionarMusica(Musica musica) {
-        int proximaPosicao = itens.size() + 1;
-        itens.add(new PlaylistM(musica, this, proximaPosicao));
-        recalcularduracao();
+        int posicao = this.itens.size() + 1;
+        PlaylistM item = new PlaylistM(musica, this, posicao);
+        this.itens.add(item);
+        recalcularDuracao();
     }
 
-    private void recalcularduracao() {
-        float soma = 0.0f;
-        for (PlaylistM pm : itens) {
-            if (pm.getMusica() != null) {
-                soma += pm.getMusica().getTempoMin();
-            }
+    public void recalcularDuracao() {
+        float total = 0;
+        for (PlaylistM item : this.itens) {
+            total = total + item.getMusica().getTempoMin();
         }
-        this.duracao = soma;
+        this.duracao = total;
     }
 }

@@ -1,91 +1,113 @@
 package comparotto.marcos.dao;
 
-import comparotto.marcos.aplicativoMusica.Pessoa;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import comparotto.marcos.aplicativoMusica.Pessoa;
 
 public class PessoaImpl implements PessoaDao {
 
     @Override
     public void inserir(Pessoa objeto) {
-        String sql = "insert into pessoa (nome, idade) values (?, ?)";
-        try (Connection conn = Conexao.obterConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, objeto.getNome());
-            stmt.setInt(2, objeto.getIdade());
-            ResultSet rs = stmt.executeQuery();
+        String sql = "insert into pessoa (nome, idade) values (?, ?) returning id";
+
+        try {
+            Connection con = Conexao.obterConexao();
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, objeto.getNome());
+            ps.setInt(2, objeto.getIdade());
+            ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
-                objeto.setId(rs.getLong("id"));
+                objeto.setId(rs.getLong(1));
             }
+            System.out.println("Pessoa salva(cadastrada)");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public Optional<Pessoa> buscarPorID(long id) {
-        String sql = "select *  from pessoa where id = ?";
-        try (Connection conn = Conexao.obterConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
+        String sql = "select * from pessoa where id = ?";
+
+        try {
+            Connection con = Conexao.obterConexao();
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
-                String nome = rs.getString("nome");
-                int idade = rs.getInt("idade");
-                // Retorna como Pessoa generica (classe anonima)
-                Pessoa p = new Pessoa(id, nome, idade) {};
+                Pessoa p = new Pessoa(rs.getLong("id"), rs.getString("nome"), rs.getInt("idade")) {};
                 return Optional.of(p);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
+
         return Optional.empty();
     }
 
     @Override
     public void alterar(Pessoa objeto) {
         String sql = "update pessoa set nome = ?, idade = ? where id = ?";
-        try (Connection conn = Conexao.obterConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, objeto.getNome());
-            stmt.setInt(2, objeto.getIdade());
-            stmt.setLong(3, objeto.getId());
-            stmt.executeUpdate();
+
+        try {
+            Connection con = Conexao.obterConexao();
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, objeto.getNome());
+            ps.setInt(2, objeto.getIdade());
+            ps.setLong(3, objeto.getId());
+            ps.executeUpdate();
+            System.out.println("Pessoa alterada");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void excluir(Pessoa objeto) {
         String sql = "delete from pessoa where id = ?";
-        try (Connection conn = Conexao.obterConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, objeto.getId());
-            stmt.executeUpdate();
+
+        try {
+            Connection con = Conexao.obterConexao();
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setLong(1, objeto.getId());
+            ps.executeUpdate();
+            System.out.println("Pessoa removida");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public List<Pessoa> listarTodos() {
-        List<Pessoa> lista = new ArrayList<>();
         String sql = "select * from pessoa";
-        try (Connection conn = Conexao.obterConexao();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        List<Pessoa> lista = new ArrayList<Pessoa>();
+
+        try {
+            Connection con = Conexao.obterConexao();
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
-                long id = rs.getLong("id");
-                String nome = rs.getString("nome");
-                int idade = rs.getInt("idade");
-                lista.add(new Pessoa(id, nome, idade) {});
+                Pessoa p = new Pessoa(rs.getLong("id"), rs.getString("nome"), rs.getInt("idade")) {};
+                lista.add(p);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
+
         return lista;
     }
 }
